@@ -2,6 +2,7 @@ import sys,os
 from sys import path
 BASE_DIR=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print(BASE_DIR)
+path.append(BASE_DIR)
 import numpy as np
 import scipy.linalg as la
  
@@ -16,7 +17,7 @@ from util import *;
 util=Util();
 # p=util.IsClinet(0.27897971688429907-0.3439974186200785j,
 # 3.3869187269102277+0.48124030963454467j,30);
-# 系统侧
+# # 系统侧
 # p=util.IsClinet(0.27897971688429907-0.3439974186200785j,
 # 3.3869187269102277+0.48124030963454467j,10);
 # print(p)
@@ -31,17 +32,17 @@ util=Util();
 # excel=Excel(ipcc_path,upcc_path).read();
 
 # # 偏最小二乘法
-# ipcc,upcc=excel.get('ipcc'),excel.get('upcc');
-# pls=Plsregress(ipcc,upcc);
-# print(pls.get_plsregress());
-# print(pls.get_c_s_dev_mean());
+ipcc,upcc=excel.get('ipcc'),excel.get('upcc');
+pls=Plsregress(ipcc,upcc);
+print(pls.get_plsregress());
+print(pls.get_c_s_dev_mean());
 # # 责任图
-# pls.draw_responsibility();
-# print(pls.get_responsibility());
-# # window,step,e 相关系数超e
-# corrcoef=Corrcoef(ipcc,upcc);
-# p=corrcoef.get_optics_data(is_complex=True);
-# # print(p)
+pls.draw_responsibility();
+print(pls.get_responsibility());
+# window,step,e 相关系数超e
+corrcoef=Corrcoef(ipcc,upcc);
+p=corrcoef.get_optics_data(is_complex=True);
+# print(p)
 # # # optics
 # ipccn,upccn=p.get('ipccn'),p.get('upccn');
 # op=Optics(ipccn,upccn);

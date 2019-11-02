@@ -1,5 +1,6 @@
 import math
 import numpy as np
+
 class Util(object):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs);
@@ -36,7 +37,10 @@ class Util(object):
         deg=self.get_degree_from_complex(t1)-self.get_degree_from_complex(t2);
         cos_deg=np.cos(deg);
         try:
-            dc=np.abs(ipcc*zs)/np.abs(upcc)*cos_deg; 
+            dc=np.abs(ipcc*zs)/np.abs(upcc)*cos_deg;
+            print("********************")
+            print(np.mean(ipcc)) 
+            print('*************')
             dc_mean=np.mean(dc);
             ds_mean=1-dc_mean;
         except:

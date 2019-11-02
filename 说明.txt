@@ -1,0 +1,4 @@
+btn.setToolTip('点击退出程序')
+        btn.clicked.connect(QCoreApplication.instance().quit)
+
+        MessageBox.question(self, 'Message', '你确认要退出么?', QMessageBox.Yes|QMessageBox.No, QMessageBox.No)
