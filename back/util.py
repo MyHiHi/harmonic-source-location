@@ -17,6 +17,7 @@ class Util(object):
     type of pcc: complex;
     return degree;
     '''
+    # 摈弃
     def get_degree_from_complex(self,pcc):
         r1,r2=pcc.real,pcc.imag;
         m=np.sqrt(r1*r1+r2*r2)
@@ -34,18 +35,18 @@ class Util(object):
         ipcc,upcc,zs=np.array(ipcc),np.array(upcc),np.array(zs);
         t1=ipcc*zs;
         t2=upcc;
-        deg=self.get_degree_from_complex(t1)-self.get_degree_from_complex(t2);
+        deg=self.angle(t1)-self.angle(t2);
         cos_deg=np.cos(deg);
+        # print(np.mean(np.abs(zs*ipcc)/np.abs(upcc)),"MMMMMMMMMMMMMMMMMM")
         try:
-            dc=np.abs(ipcc*zs)/np.abs(upcc)*cos_deg;
-            print("********************")
-            print(np.mean(ipcc)) 
-            print('*************')
+            dc=np.abs(zs*ipcc)/np.abs(upcc)*cos_deg;
             dc_mean=np.mean(dc);
             ds_mean=1-dc_mean;
         except:
             dc_mean,ds_mean=self.error
         return {'dc_mean':dc_mean,'ds_mean':ds_mean}
+    def angle(self,x):
+        return np.array([math.atan2(i.imag,i.real) for i in x])
     def get_c_s_dev_mean(self,ipcc,zs,us):
         i_z_mean=np.mean(ipcc*zs);
         u_mean=np.mean(us);

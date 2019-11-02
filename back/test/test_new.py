@@ -22,10 +22,10 @@ util=Util();
 # 3.3869187269102277+0.48124030963454467j,10);
 # print(p)
 
-# # 复数的情况 
-# upcc_path=os.path.join(BASE_DIR,'excel/2-1-2更新UPCC.xls')
-# ipcc_path=os.path.join(BASE_DIR,'excel/2-1-2更新IPCC.xls');
-# excel=Excel(ipcc_path,upcc_path).read();
+# 复数的情况 
+upcc_path=os.path.join(BASE_DIR,'excel/2-1-2更新UPCC.xls')
+ipcc_path=os.path.join(BASE_DIR,'excel/2-1-2更新IPCC.xls');
+excel=Excel(ipcc_path,upcc_path).read();
 # # 非复数的情况 A
 # upcc_path=os.path.join(BASE_DIR,'excel/2-2-2更新UPCC.xls')
 # ipcc_path=os.path.join(BASE_DIR,'excel/2-2-2更新IPCC.xls')
@@ -34,14 +34,16 @@ util=Util();
 # # 偏最小二乘法
 ipcc,upcc=excel.get('ipcc'),excel.get('upcc');
 pls=Plsregress(ipcc,upcc);
-print(pls.get_plsregress());
-print(pls.get_c_s_dev_mean());
+zs=pls.get_plsregress().get('zs');
+print(util.get_responsibility_mean(ipcc,upcc,zs))
+# print(pls.get_plsregress());
+# print(pls.get_c_s_dev_mean());
 # # 责任图
-pls.draw_responsibility();
-print(pls.get_responsibility());
+# pls.draw_responsibility();
+# print(pls.get_responsibility());
 # window,step,e 相关系数超e
-corrcoef=Corrcoef(ipcc,upcc);
-p=corrcoef.get_optics_data(is_complex=True);
+# corrcoef=Corrcoef(ipcc,upcc);
+# p=corrcoef.get_optics_data(is_complex=True);
 # print(p)
 # # # optics
 # ipccn,upccn=p.get('ipccn'),p.get('upccn');
