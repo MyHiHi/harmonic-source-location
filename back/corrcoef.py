@@ -7,7 +7,7 @@ class Corrcoef(object):
         self.ipcc=ipcc;
         self.upcc=upcc;
    
-    def get_over_corrcoef_data(self,window=50,step=1,params=0.9):
+    def get_over_corrcoef_data(self,window=100,step=1,params=0.85):
         if step>=window:return False;
         le=self.ipcc.shape[0];
         rag=le-window+1;
@@ -25,8 +25,11 @@ class Corrcoef(object):
     and upcc+window over step
     '''
     def get_optics_data(self,window=100,step=1,params=0.85,is_complex=False):
-        ans_over=self.get_over_corrcoef_data(window,step, params);
-        ip_le=len(ans_over)+window-1;
+        try:
+            ans_over=self.get_over_corrcoef_data(window,step, params);
+            ip_le=len(ans_over)+window-1;
+        except:
+            return;
         if is_complex:
             ipccn,upccn=np.zeros((ip_le,1),dtype="complex128"),np.zeros((ip_le,1),dtype="complex128");
         else:

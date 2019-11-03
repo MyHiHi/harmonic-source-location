@@ -17,21 +17,24 @@ from back.optics import Optics;
 from back.plsregress  import Plsregress
 from time import sleep
 window_wid, window_hei =990, 480
-title = '谐波源定位';
+title = '单点谐波源定位';
 ans_c='有功功率从用户侧指向系统侧, 主谐波源在用户侧';
 ans_s='有功功率从系统侧指向用户侧 主谐波源在系统侧';
 tip_w='结果大于0时,主谐波源在用户侧,否则系统侧,即结束程序 ：';
+start_tip='请先定性分析主谐波源位置！然后选择文件';
 red_style='color:red;font-weight:bold;';
 big_style=red_style+'font-size:20px;text-align:center;';
 small_style=red_style+'font-size:13px;text-align:center;';
-blue_style='color:blue;font-weight:bold;';
+blue_style='color:blue;font-weight:bold;font-size:15px';
 
 error_two=['无','无']
 class Center(QtWidgets.QWidget):
     def __init__(self,  parent=None):
         QtWidgets.QWidget.__init__(self,  parent);
         self.util=Util();
-        self.setWindowTitle(title)
+        self.switch=False;
+        self.file_switch=False;
+        self.setWindowTitle(title);
         self.resize(window_wid, window_hei)
         self.center();
         self.ipcc,self.upcc,self.is_complex=None,None,False;
@@ -39,6 +42,7 @@ class Center(QtWidgets.QWidget):
         self.setLayout(self.QVBox_whole);
         self.upcc_QL = QLineEdit();
         self.upcc_QL.setPlaceholderText('实数或复数');
+        
         self.ipcc_QL = QLineEdit();
         self.ipcc_QL.setPlaceholderText('实数或复数');
         self.degree_QL = QLineEdit();
@@ -92,6 +96,7 @@ class Center(QtWidgets.QWidget):
         QHBox_excel = QHBoxLayout();
         excel_tip = QLabel('请选择文件');
         self.open = QPushButton('打开EXCEL(电流与电压)文件');
+        self.open.setStyleSheet(blue_style);
         self.open.clicked.connect(self.open_file);
         self.excel_ans = QLabel('');
         self.excel_ans.setStyleSheet(red_style);
@@ -119,14 +124,19 @@ class Center(QtWidgets.QWidget):
         complex_simple_start.clicked.connect(self.complex_sim_start);
         zs_tip = QLabel('Zs: ');
         self.zs=QLineEdit();
+        self.zs.setReadOnly(True);
         us_tip = QLabel('系统侧谐波发射水平（均值）:');
         self.us=QLineEdit();
+        self.us.setReadOnly(True);
         ipcc_zs_tip = QLabel('用户侧谐波发射水平（均值）');
         self.ipcc_zs=QLineEdit();
+        self.ipcc_zs.setReadOnly(True);
         resp_c_mean_tip = QLabel('用户侧谐波责任（均值）');
         self.resp_ck_mean=QLineEdit("");
+        self.resp_ck_mean.setReadOnly(True);
         resp_s_mean_tip = QLabel('系统侧谐波责任（均值）');
         self.resp_sk_mean=QLineEdit();
+        self.resp_sk_mean.setReadOnly(True);
         draw_resp = QPushButton('生成谐波责任图');
         draw_resp.clicked.connect(self.draw_respons);
         QVBox_complex_simple.addWidget(c_tip,0,Qt.AlignHCenter);
@@ -185,44 +195,46 @@ class Center(QtWidgets.QWidget):
         draw_three_section.clicked.connect(self.draw_three_sections);
         us_tip_1 = QLabel('段一 系统侧谐波发射水平（均值）:');
         self.us_1=QLineEdit();
+        self.us_1.setReadOnly(True);
         ipcc_zs_tip_1 = QLabel('段一 用户侧谐波发射水平（均值）');
         self.ipcc_zs_1=QLineEdit();
+        self.ipcc_zs_1.setReadOnly(True);
         us_tip_2 = QLabel('段二 系统侧谐波发射水平（均值）:');
         self.us_2=QLineEdit();
+        self.us_2.setReadOnly(True);
         ipcc_zs_tip_2 = QLabel('段二 用户侧谐波发射水平（均值）');
         self.ipcc_zs_2=QLineEdit();
+        self.ipcc_zs_2.setReadOnly(True);
         us_tip_3 = QLabel('段三 系统侧谐波发射水平（均值）:');
         self.us_3=QLineEdit();
+        self.us_3.setReadOnly(True);
         ipcc_zs_tip_3 = QLabel('段三 用户侧谐波发射水平（均值）');
         self.ipcc_zs_3=QLineEdit();
-
-
+        self.ipcc_zs_3.setReadOnly(True);
         resp_s_tip_1 = QLabel('段一 系统侧谐波责任（均值）:');
         self.resp_s_1=QLineEdit();
+        self.resp_s_1.setReadOnly(True);
         resp_c_tip_1 = QLabel('段一 用户侧谐波责任（均值）');
         self.resp_c_1=QLineEdit();
+        self.resp_c_1.setReadOnly(True);
         resp_s_tip_2 = QLabel('段二 系统侧谐波责任（均值）:');
         self.resp_s_2=QLineEdit();
+        self.resp_s_2.setReadOnly(True);
         resp_c_tip_2 = QLabel('段二 用户侧谐波责任（均值）');
         self.resp_c_2=QLineEdit();
+        self.resp_c_2.setReadOnly(True);
         resp_s_tip_3 = QLabel('段三 系统侧谐波责任（均值）:');
         self.resp_s_3=QLineEdit();
+        self.resp_s_3.setReadOnly(True);
         resp_c_tip_3 = QLabel('段三 用户侧谐波责任（均值）');
         self.resp_c_3=QLineEdit();
-
-
- 
-
-        
-
+        self.resp_c_3.setReadOnly(True);
         resp_c_mean_tip = QLabel('用户侧谐波责任（均值）');
         self.resp_c_mean=QLineEdit();
+        self.resp_c_mean.setReadOnly(True);
         resp_s_mean_tip = QLabel('系统侧谐波责任（均值）');
         self.resp_s_mean=QLineEdit();
-
-
-
-
+        self.resp_s_mean.setReadOnly(True);
         complex_simple_start.clicked.connect(self.complex_com_start);
         QHBox_complex_com.addWidget(c_yes,0,Qt.AlignHCenter);
         QHBox_complex_com.addWidget(complex_simple_start,0,Qt.AlignHCenter);
@@ -287,16 +299,30 @@ class Center(QtWidgets.QWidget):
         if ipcc=='' or upcc =='' or degree=='':
             self.Info();
         else:
-            ipcc,upcc,degree=eval(ipcc),eval(upcc),eval(degree);
-            ans=self.util.IsClinet(ipcc,upcc,degree);
-            if ans:
-                self.ans.setText(ans_c);
-                self.Info(word='主谐波源在用户侧,是否进行责任划分模式？');
-            else:
-                self.ans.setText(ans_s);
-                QMessageBox.about(self,'提示','主谐波源在系统侧，退出程序')
-                QCoreApplication.instance().quit();
+            try:
+                ipcc,upcc,degree=eval(ipcc),eval(upcc),eval(degree);
+                ans=self.util.IsClinet(ipcc,upcc,degree);
+                if ans:
+                    self.ans.setText(ans_c);
+                    self.Info(word='主谐波源在用户侧,是否进行责任划分模式？');
+                    self.switch=True;
+                else:
+                    self.ans.setText(ans_s);
+                    self.warn(word='主谐波源在系统侧，退出程序')
+                    QCoreApplication.instance().quit();
+            except:
+                self.warn(word='输入有误！请重新输入！')
+                self.cancel();
+    def warn(self,word=''):
+        QMessageBox.about(self,'提示',word);
+    # def look(self):
+    #     if not self.switch:
+    #         self.warn(word='请先定性分析主谐波源位置！');
+    #         return ;
     def complex_sim_start(self):
+        if not self.switch or not self.file_switch:
+            self.warn(word=start_tip);
+            return ;
         self.pls=Plsregress(self.ipcc,self.upcc);  
         plsr=self.pls.get_plsregress();
         zs,us=plsr.get('zs'),plsr.get('us');
@@ -311,6 +337,9 @@ class Center(QtWidgets.QWidget):
         self.resp_ck_mean.setText(str(dc_mean));
         self.resp_sk_mean.setText(str(ds_mean));
     def complex_com_start(self):
+        if not self.switch or not self.file_switch:
+            self.warn(word=start_tip);
+            return ;
         corrcoef=Corrcoef(self.ipcc,self.upcc);
         window,step,e=eval(self.window_QL.text()),eval(self.step_QL.text()),eval(self.e_QL.text()),
         p=corrcoef.get_optics_data(window,step,e,self.is_complex);
@@ -387,6 +416,9 @@ class Center(QtWidgets.QWidget):
         self.move((screen.width() - size.width()) / 2,
                   (screen.height() - size.height()) / 2)
     def open_file(self):
+        if not self.switch:
+            self.warn(word=start_tip);
+            return ;
         ipcc_path, filetype = QFileDialog.getOpenFileName(self,
                   "选取电流文件",
                   "./",
@@ -398,7 +430,9 @@ class Center(QtWidgets.QWidget):
         if not(ipcc_path and upcc_path):
             self.Info(word="打开失败，请重试！");
             return;
+        
         else:
+            self.file_switch=True;
             ipcc_tip,upcc_tip=ipcc_path.split('/')[-1],upcc_path.split('/')[-1]
             self.open.setText(ipcc_tip+" + "+upcc_tip)
         self.excel=Excel(ipcc_path,upcc_path);
@@ -420,7 +454,16 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     qb = Center();
-    font=app.font()
+    font=app.font();
+    qb.setWindowOpacity(0.94) # 设置窗口透明度
+    pe = QPalette()
+    qb.setAutoFillBackground(True);
+    qb.setStyleSheet('''
+    background-color:#D2E9FF;
+    font-size:13px;
+    
+    ''');
+    qb.setPalette(pe)
     font.setFamily('微软雅黑');
     app.setFont(font);
     qb.show();
