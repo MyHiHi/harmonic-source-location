@@ -456,7 +456,7 @@ if __name__ == "__main__":
     qb = Center();
     font=app.font();
     qb.setWindowOpacity(0.94) # 设置窗口透明度
-    pe = QPalette()
+    pe = QPzalette()
     qb.setAutoFillBackground(True);
     qb.setStyleSheet('''
     background-color:#D2E9FF;
