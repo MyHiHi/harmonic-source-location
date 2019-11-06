@@ -8,8 +8,9 @@ from util import Util
 
 
 class Optics(object):
-    def __init__(self, ipccn, upccn):
-        self.ipccn, self.upccn = ipccn, upccn
+    def __init__(self, ipccn, upccn,e=0.02):
+        self.ipccn, self.upccn = ipccn, upccn;
+        self.e=e;
         self.data = np.concatenate((ipccn, upccn), axis=1)
         self.util = Util()
         self.error = [None, None];
@@ -86,7 +87,8 @@ class Optics(object):
         plt.legend(loc='upper left')
         plt.show()
 
-    def get_cluster(self, e=0.02):
+    def get_cluster(self):
+        e=self.e
         le = self.data.shape[0]
         optics = self.get_optics(k=4)
         order, RD, CD = optics.get('order'), optics.get('RD'), optics.get('CD')
@@ -104,9 +106,9 @@ class Optics(object):
                 mark[xi] = ID
         return mark
 
-    def get_three_section(self, e=0.02):
+    def get_three_section(self):
         le = self.data.shape[0]
-        mark = self.get_cluster(e)
+        mark = self.get_cluster()
         ipccn_1, upccn_1 = [], []
         ipccn_2, upccn_2 = [], []
         ipccn_3, upccn_3 = [], []
@@ -126,9 +128,10 @@ class Optics(object):
                 'pccn_3': [ipccn_3, upccn_3],
                 }
 
-    def draw_three_section(self, e=0.02, color1='b', color2='g', color3='r', label1='段一', label2='段二', label3='段三', title='聚类图', xlabel='IPCC/A', ylabel='UPCC/V'):
+    def draw_three_section(self,  color1='b', color2='g', color3='r', label1='段一', label2='段二', label3='段三', title='聚类图', xlabel='IPCC/A', ylabel='UPCC/V'):
+   
         pafig, ax = plt.subplots(figsize=(6, 4))
-        sections = self.get_three_section(e)
+        sections = self.get_three_section()
         one = sections.get('pccn_1')
         two = sections.get('pccn_2')
         three = sections.get('pccn_3')
@@ -142,9 +145,9 @@ class Optics(object):
         plt.legend(loc='upper left')
         plt.show()
 
-    def get_three_section_plsregress(self, e=0.02):
+    def get_three_section_plsregress(self):
         try:
-            sections = self.get_three_section(e)
+            sections = self.get_three_section()
             try:
                 ipccn_1, upccn_1 = sections.get('pccn_1')
                 one = Plsregress(ipccn_1, upccn_1).get_plsregress()
@@ -179,12 +182,12 @@ class Optics(object):
                 'pccn_2_pls': {'zs_2': zs_2, 'us_2': us_2},
                 'pccn_3_pls': {'zs_3': zs_3, 'us_3': us_3}}
 
-    def get_three_section_responsibility_mean(self, e=0.02):
-        sections = self.get_three_section(e)
+    def get_three_section_responsibility_mean(self):
+        sections = self.get_three_section()
         ipccn_1, upccn_1 = sections.get('pccn_1')
         ipccn_2, upccn_2 = sections.get('pccn_2')
         ipccn_3, upccn_3 = sections.get('pccn_3')
-        pccn_pls = self.get_three_section_plsregress(e)
+        pccn_pls = self.get_three_section_plsregress()
         zs_1 = pccn_pls.get('pccn_1_pls').get('zs_1')
         zs_2 = pccn_pls.get('pccn_2_pls').get('zs_2')
         zs_3 = pccn_pls.get('pccn_3_pls').get('zs_3')
@@ -197,8 +200,8 @@ class Optics(object):
         return {'pccn_1_resp_mean': pccn_1_resp_mean,
                 'pccn_2_resp_mean': pccn_2_resp_mean, "pccn_3_resp_mean": pccn_3_resp_mean}
 
-    def get_three_section_c_s_dev_mean(self, e=0.02):
-        sections = self.get_three_section(e)
+    def get_three_section_c_s_dev_mean(self):
+        sections = self.get_three_section()
         try:
             ipccn_1, upccn_1 = sections.get('pccn_1')
             one = Plsregress(ipccn_1, upccn_1).get_plsregress()

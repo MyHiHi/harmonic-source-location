@@ -1,6 +1,7 @@
 import numpy as np
 import xlrd
 from util import *
+
 np.set_printoptions(precision=20)
 np.set_printoptions(suppress=True)
 class Excel(object):
@@ -20,7 +21,7 @@ class Excel(object):
     def read(self):
         data1,data2 = xlrd.open_workbook(self.ipcc_path),xlrd.open_workbook(self.upcc_path);
         table1,table2 = data1.sheets()[0],data2.sheets()[0];
-        nrows1,nrows2 = table1.nrows ,table2.nrows;
+        nrows1,nrows2 = table1.nrows,table2.nrows;
         ncols1,ncols2 = table1.ncols  ,table2.ncols;
         data=table1.col_values(0)[0];
         is_complex = self.util.is_complex(data);
@@ -47,4 +48,5 @@ class Excel(object):
             datamatrix1[:, x] = cols1 # 把数据进行存储
             datamatrix2[:, x] = cols2 # 把数据进行存储
         return {'ipcc':datamatrix1,'upcc':datamatrix2,'is_complex':is_complex}
+
 

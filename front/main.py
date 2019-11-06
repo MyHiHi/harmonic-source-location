@@ -45,8 +45,6 @@ class Center(QtWidgets.QWidget):
         
         self.ipcc_QL = QLineEdit();
         self.ipcc_QL.setPlaceholderText('实数或复数');
-        self.degree_QL = QLineEdit();
-        self.degree_QL.setPlaceholderText('实数')
         self.init_ui();
     def init_ui(self):
         self.is_client()
@@ -65,7 +63,6 @@ class Center(QtWidgets.QWidget):
         top_title.setStyleSheet(big_style);
         upcc_title = QLabel('电压值');
         ipcc_title = QLabel('电流值');
-        degree_titile= QLabel('相位差');
         tip = QLabel(tip_w);
         self.ans= QLabel('');
         self.ans.setStyleSheet(big_style);
@@ -79,8 +76,6 @@ class Center(QtWidgets.QWidget):
         self.QHBox_top.addWidget(self.upcc_QL, );
         self.QHBox_top.addWidget(ipcc_title,);
         self.QHBox_top.addWidget(self.ipcc_QL, );
-        self.QHBox_top.addWidget(degree_titile, );
-        self.QHBox_top.addWidget(self.degree_QL, );
         self.QHBox_top.addWidget(cal,);
         self.QHBox_top.addWidget(cancel,);
         self.QHBox_tip.addWidget(tip, );
@@ -122,9 +117,9 @@ class Center(QtWidgets.QWidget):
         complex_simple_start = QPushButton('计算');
         complex_simple_start.setStyleSheet(blue_style);
         complex_simple_start.clicked.connect(self.complex_sim_start);
-        zs_tip = QLabel('Zs: ');
-        self.zs=QLineEdit();
-        self.zs.setReadOnly(True);
+        # zs_tip = QLabel('Zs: ');
+        # self.zs=QLineEdit();
+        # self.zs.setReadOnly(True);
         us_tip = QLabel('系统侧谐波发射水平（均值）:');
         self.us=QLineEdit();
         self.us.setReadOnly(True);
@@ -142,8 +137,8 @@ class Center(QtWidgets.QWidget):
         QVBox_complex_simple.addWidget(c_tip,0,Qt.AlignHCenter);
         QHBox_complex_simple3.addWidget(c_no,0,Qt.AlignHCenter);
         QHBox_complex_simple3.addWidget(complex_simple_start,0,Qt.AlignHCenter);
-        QHBox_complex_simple.addWidget(zs_tip);
-        QHBox_complex_simple.addWidget(self.zs);
+        # QHBox_complex_simple.addWidget(zs_tip);
+        # QHBox_complex_simple.addWidget(self.zs);
         QHBox_complex_simple.addWidget(us_tip);
         QHBox_complex_simple.addWidget(self.us);
         QHBox_complex_simple.addWidget(ipcc_zs_tip);
@@ -189,6 +184,8 @@ class Center(QtWidgets.QWidget):
         self.step_QL=QLineEdit('1');
         e_tip = QLabel('筛选参数: ');
         self.e_QL=QLineEdit('0.85');
+        e_cluster_tip = QLabel('提取凹陷区域聚类参数: ');
+        self.e_cluster_QL=QLineEdit('0.02');
         draw_order_graph = QPushButton('生成有序队列图');
         draw_order_graph.clicked.connect(self.draw_ordered_graph);
         draw_three_section = QPushButton('生成聚类图');
@@ -244,6 +241,8 @@ class Center(QtWidgets.QWidget):
         QHBox_complex_com1.addWidget(self.step_QL);
         QHBox_complex_com1.addWidget(e_tip);
         QHBox_complex_com1.addWidget(self.e_QL);
+        QHBox_complex_com1.addWidget(e_cluster_tip);
+        QHBox_complex_com1.addWidget(self.e_cluster_QL);
         QHBox_complex_com2.addWidget(us_tip_1);
         QHBox_complex_com2.addWidget(self.us_1);
         QHBox_complex_com2.addWidget(ipcc_zs_tip_1);
@@ -295,13 +294,13 @@ class Center(QtWidgets.QWidget):
     def no_complex_complicate(self):
         pass
     def cal(self):
-        ipcc,upcc,degree=self.ipcc_QL.text(),self.upcc_QL.text(),self.degree_QL.text();
-        if ipcc=='' or upcc =='' or degree=='':
+        ipcc,upcc=self.ipcc_QL.text(),self.upcc_QL.text();
+        if ipcc=='' or upcc =='' :
             self.Info();
         else:
             try:
-                ipcc,upcc,degree=eval(ipcc),eval(upcc),eval(degree);
-                ans=self.util.IsClinet(ipcc,upcc,degree);
+                ipcc,upcc=eval(ipcc),eval(upcc);
+                ans=self.util.IsClinet(ipcc,upcc);
                 if ans:
                     self.ans.setText(ans_c);
                     self.Info(word='主谐波源在用户侧,是否进行责任划分模式？');
@@ -310,7 +309,8 @@ class Center(QtWidgets.QWidget):
                     self.ans.setText(ans_s);
                     self.warn(word='主谐波源在系统侧，退出程序')
                     QCoreApplication.instance().quit();
-            except:
+            except Exception as e:
+                print(e)
                 self.warn(word='输入有误！请重新输入！')
                 self.cancel();
     def warn(self,word=''):
@@ -331,7 +331,7 @@ class Center(QtWidgets.QWidget):
         d_s_mean=self.util.get_responsibility_mean(self.ipcc,self.upcc,zs);
         
         dc_mean,ds_mean=d_s_mean.get('dc_mean'),d_s_mean.get('ds_mean');
-        self.zs.setText(str(zs));
+        # self.zs.setText(str(zs));
         self.us.setText(str(us));
         self.ipcc_zs.setText(str(c_dev));
         self.resp_ck_mean.setText(str(dc_mean));
@@ -341,10 +341,10 @@ class Center(QtWidgets.QWidget):
             self.warn(word=start_tip);
             return ;
         corrcoef=Corrcoef(self.ipcc,self.upcc);
-        window,step,e=eval(self.window_QL.text()),eval(self.step_QL.text()),eval(self.e_QL.text()),
+        window,step,e,self.e_cluster=eval(self.window_QL.text()),eval(self.step_QL.text()),eval(self.e_QL.text()),eval(self.e_cluster_QL.text())
         p=corrcoef.get_optics_data(window,step,e,self.is_complex);
         ipccn,upccn=p.get('ipccn'),p.get('upccn');
-        self.op=Optics(ipccn,upccn);
+        self.op=Optics(ipccn,upccn,self.e_cluster);
         dev_mean=self.op.get_three_section_c_s_dev_mean();
         dev_1,dev_2,dev_3=dev_mean.get('dev_1'),dev_mean.get('dev_2'),dev_mean.get('dev_3');
         try:
@@ -409,7 +409,6 @@ class Center(QtWidgets.QWidget):
     def cancel(self):
         self.ipcc_QL.clear();
         self.upcc_QL.clear();
-        self.degree_QL.clear();
     def center(self):
         screen = QDesktopWidget().screenGeometry()
         size = self.geometry()
@@ -456,14 +455,13 @@ if __name__ == "__main__":
     qb = Center();
     font=app.font();
     qb.setWindowOpacity(0.94) # 设置窗口透明度
-    pe = QPzalette()
+    # pe = QPzalette()
     qb.setAutoFillBackground(True);
     qb.setStyleSheet('''
     background-color:#D2E9FF;
-    font-size:13px;
-    
+    font-size:13px
     ''');
-    qb.setPalette(pe)
+    # qb.setPalette(pe)
     font.setFamily('微软雅黑');
     app.setFont(font);
     qb.show();
