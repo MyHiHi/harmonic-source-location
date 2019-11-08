@@ -24,7 +24,7 @@ tip_w='结果大于0时,主谐波源在用户侧,否则系统侧,即结束程序
 start_tip='请先定性分析主谐波源位置！然后选择文件';
 red_style='color:red;font-weight:bold;';
 big_style=red_style+'font-size:20px;text-align:center;';
-small_style=red_style+'font-size:13px;text-align:center;';
+small_style=red_style+'font-size:18px;text-align:center;';
 blue_style='color:blue;font-weight:bold;font-size:15px';
 
 error_two=['无','无']
@@ -67,7 +67,7 @@ class Center(QtWidgets.QWidget):
         self.ans= QLabel('');
         self.ans.setStyleSheet(big_style);
         
-        cal = QPushButton('计算');
+        cal = QPushButton('定向主谐波源位置');
         cal.setStyleSheet(blue_style)
         cal.clicked.connect(self.cal);
         cancel = QPushButton('取消');
@@ -114,7 +114,7 @@ class Center(QtWidgets.QWidget):
         c_tip.setStyleSheet(big_style);
         c_no = QLabel('不考虑背景谐波电压波动和阻抗变化');
         c_no.setStyleSheet(small_style);
-        complex_simple_start = QPushButton('计算');
+        complex_simple_start = QPushButton('简单模式的发射水平和责任值计算');
         complex_simple_start.setStyleSheet(blue_style);
         complex_simple_start.clicked.connect(self.complex_sim_start);
         # zs_tip = QLabel('Zs: ');
@@ -172,7 +172,7 @@ class Center(QtWidgets.QWidget):
         QHBox_complex_com8 = QHBoxLayout();
         c_yes = QLabel('考虑背景谐波电压波动和阻抗变化');
         c_yes.setStyleSheet(small_style);
-        complex_simple_start = QPushButton('计算');
+        complex_simple_start = QPushButton('复杂模式的发射水平和责任值计算');
         complex_simple_start.setStyleSheet(blue_style);
         tip_1 = QLabel('谐波发射水平（均值）');
         tip_1.setStyleSheet(red_style);

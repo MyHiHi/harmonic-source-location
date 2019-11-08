@@ -20,13 +20,13 @@ class Util(object):
     type of pcc: complex;
     return degree;
     '''
-    # 摈弃
-    # def get_degree_from_complex(self,pcc):
-    #     r1,r2=pcc.real,pcc.imag;
-    #     m=np.sqrt(r1*r1+r2*r2)
-    #     degree=np.arccos(r1/m)*180/math.pi
-    #     degree=np.arccos(r1/m)*math.pi/180
-    #     return degree;
+    # 
+    def get_degree_from_complex(self,pcc):
+        r1,r2=pcc.real,pcc.imag;
+        m=np.sqrt(r1*r1+r2*r2)
+        degree=np.arccos(r1/m)*180/math.pi
+        degree=np.arccos(r1/m)*math.pi/180
+        return degree;
     def is_complex(self,data):
         return type(eval(str(data))) == type(1+1j);
     def get_responsibility_mean(self,ipcc,upcc,zs):

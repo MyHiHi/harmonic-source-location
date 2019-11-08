@@ -29,7 +29,6 @@ class Plsregress(object):
         ipcc,upcc=self.ipcc,self.upcc;
         t1=ipcc*zs;
         t2=upcc;
-        
         deg=self.util.get_degree_from_complex(t1)-self.util.get_degree_from_complex(t2);
         cos_deg=np.cos(deg);
         dc=np.abs(ipcc*zs)/np.abs(upcc)*cos_deg;
